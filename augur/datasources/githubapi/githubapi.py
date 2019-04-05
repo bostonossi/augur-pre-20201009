@@ -154,6 +154,48 @@ class GitHubAPI(object):
 
         return df
 
+    @annotate(tag='comments-pull-requests')
+    def num_comments_pull_requests(self, owner, repo):
+        """
+        Timeseries of the count of the number of comments of pull requests per day.
+
+        :param owner: The name of the project owner.
+        :param repo: The name of the repo.
+        :return: DataFrame with pull requests/day.
+        """
+        i = 0
+        url = "https://api.github.com/repos/{}/{}/pulls?page={}"
+        json = []
+
+        # Paginate through all the pull requests
+        while True:
+            j = requests.get(url.format(owner, repo, i),
+                             auth=('user', self.GITHUB_API_KEY)).json()
+            if len(j) == 0:
+                break
+            json += j
+            i += 1
+
+        # get the pr number
+        list_pr_number = [json[i]['number'] for i in range(len(json))]
+
+        # paginate through all the review comments
+        json1 = []
+        for i in list_pr_number:
+            url = "https://api.github.com/repos/{}/{}/pulls/comments/{}"
+            j = requests.get(url.format(owner, repo, i), auth=('user', self.GITHUB
+                                                               _API_KEY)).json()
+            
+            json1 += j
+
+        # create the data frame 
+        df = pd.DataFrame.from_dict({i: json1[i]['body']
+                                     for i in range(len(json1))}, orient='index')
+        df.columns = ['created_at']
+        df['created_at'] = pd.to_datetime(df['created_at']).dt.normalize()
+        df = df.groupby('created_at').size().reset_index(name='count')
+
+        return df
 
 
     #####################################
