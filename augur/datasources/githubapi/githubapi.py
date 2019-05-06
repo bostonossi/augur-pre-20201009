@@ -324,15 +324,17 @@ class GitHubAPI(object):
 
 	while True:
 		json = requests.get(url, auth=('user', self.GITHUB_API_KEY)).json()
+		if (json == null):
+			break
 		pull_requests.append(json)
 		i+=1
 
 	num_pull_requests = pull_request.length()
 	df.columns = ['created_at']
-    df['created_at'] = pd.to_datetime(df['created_at']).dt.normalize()
-    df = df.groupby('created_at').size().reset_index(name='count')
+    	df['created_at'] = pd.to_datetime(df['created_at']).dt.normalize()
+    	df = df.groupby('created_at').size().reset_index(name='count')
 
-    return df
+   	return df
 
 
     #####################################
