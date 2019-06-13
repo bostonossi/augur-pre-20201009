@@ -311,30 +311,30 @@ class GitHubAPI(object):
     
     @annotate(tag='pull-requests')
     def number_of_pull_requests(self, owner, repo):
-	"""
-	Timeseries of number of pull requests per day.
+    """
+    Timeseries of number of pull requests per day.
 
-	:param owner: The name of the project owner
-	:param repo: The name of the repo
-	:return: DataFrame with number of pull requests per day.
-	"""
-	i = 0
-	url = 'https://api.github.com/repos/{}/{}/pulls'.format(owner, repo, i)
-	pull_requests = []
+    :param owner: The name of the project owner
+    :param repo: The name of the repo
+    :return: DataFrame with number of pull requests per day.
+    """
+        i = 0
+        url = 'https://api.github.com/repos/{}/{}/pulls'.format(owner, repo, i)
+        pull_requests = []
 
-	while True:
-		json = requests.get(url, auth=('user', self.GITHUB_API_KEY)).json()
-		if (json == null):
-			break
-		pull_requests.append(json)
-		i+=1
+        while True:
+            json = requests.get(url, auth=('user', self.GITHUB_API_KEY)).json()
+            if (json == null):
+                break
+            pull_requests.append(json)
+            i+=1
 
-	num_pull_requests = pull_request.length()
-	df.columns = ['created_at']
-    	df['created_at'] = pd.to_datetime(df['created_at']).dt.normalize()
-    	df = df.groupby('created_at').size().reset_index(name='count')
+        num_pull_requests = pull_request.length()
+        df.columns = ['created_at']
+        df['created_at'] = pd.to_datetime(df['created_at']).dt.normalize()
+        df = df.groupby('created_at').size().reset_index(name='count')
 
-   	return df
+        return df
 
 
     #####################################
