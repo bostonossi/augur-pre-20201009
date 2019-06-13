@@ -284,14 +284,13 @@ class GitHubAPI(object):
         return df
     
     @annotate(tag='pull-requests')
-    def number_of_pull_requests(self, owner, repo):
-    """
-    Timeseries of number of pull requests per day.
-
-    :param owner: The name of the project owner
-    :param repo: The name of the repo
-    :return: DataFrame with number of pull requests per day.
-    """
+    def number_of_pull_requests(self, owner, repo):        
+        """
+        Timeseries of number of pull requests per day.
+        :param owner: The name of the project owner
+        :param repo: The name of the repo
+        :return: DataFrame with number of pull requests per day.
+        """
         i = 0
         url = 'https://api.github.com/repos/{}/{}/pulls'.format(owner, repo, i)
         pull_requests = []
