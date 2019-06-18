@@ -1,8 +1,7 @@
 <template>
   <div ref="holder">
     <div class="spacing"></div>
-    <div class="error hidden"><br>Data is missing or unavailable for metric: <p style="color: black !important">{{ title }}</p></div>
-    <div class="spinner loader"></div>
+    <div style="color: black" class="error hidden"><br><p style="font-size: 70px; padding-bottom: 3px">🕵️</p> Data is missing or unavailable for metric: <p style="color: blue !important">{{ source }}</p></div>    <div class="spinner loader"></div>
     <div class="hidefirst linechart" v-bind:class="{ invis: !detail, invisDet: detail }">
       <!-- <div class="row">
         <div class="col col-4" ><input type="radio" name="timeoption" value="month" v-model="timeperiod">Month</div>
@@ -169,7 +168,9 @@ export default {
                     "field": "date",
                     "type": "temporal",
                     "axis": {
-                      "labels": !this.showDetail
+                      "labels": this.showDetail,
+                      "format": "%b %Y",
+                      "title": " "
                     }
                   },
                   "color": {
