@@ -27,8 +27,16 @@ Vagrant.configure("2") do |config|
 
     vagrant_host.vm.network "forwarded_port", guest: 3333, host: 3333
     vagrant_host.vm.network "forwarded_port", guest: 5000, host: 5000
-    vagrant_host.vm.synced_folder ".", "/vagrant/augur", type: "rsync", rsync__auto: true, rsync__exclude: ['./node_modules*']
-    
+
+    if Vagrant::Util::Platform.windows? then
+      config.vm.synced_folder ".", "/vagrant/augur", type: "rsync", rsync__auto: true, rsync__exclude: ['./frontend/node_modules']
+    else
+      if vagrant_host.vm.provider "virtualbox" then
+        config.vm.synced_folder ".", "/vagrant/augur", type: 'virtualbox', SharedFoldersEnableSymlinksCreate: false
+      else
+        vagrant_host.vm.synced_folder ".", "/vagrant/augur", type: "rsync", rsync__auto: true, rsync__exclude: ['./frontend/node_modules*']
+      end
+    end
     # documentation for more information about their specific syntax and use.
     vagrant_host.vm.provision "shell", path: "util/packaging/vagrant/provision.sh"
     vagrant_host.vm.provision "shell", inline: "cd /vagrant/augur && $AUGUR_PIP install --upgrade .", privileged: true
